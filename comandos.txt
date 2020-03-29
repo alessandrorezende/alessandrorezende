@@ -1,0 +1,116 @@
+COMANDOS REDIS
+
+--INICIAR O SERVIDOR
+./redis-server
+
+--CONECTAR NO SERVIDOR REDIS
+./redis-cli
+--------------------------------------------------
+-EXEMPLO DE USO
+--CRIA UMA CHAVE NO REDIS
+>>SET "total_de_cursos" 105
+
+--PEGA UMA CHAVE ESPECIFICA DO REDIS
+>>GET "total_de_cursos" 
+>>"105"
+
+--DELETA UMA CHAVE DO REDIS
+>>DEL "total_de_cursos" 
+OK
+
+--RETORNA TODAS AS CHAVES DO REDIS
+>> KEYS *
+
+
+chave: resultado:17-05-2015:megasena valor: "2, 15, 18, 25, 28, 32"
+>>SET resultado:17-05-2015:megasena "2, 15, 18, 25, 28, 32"
+
+chave: resultado:10-05-2015:megasena valor: "4, 16, 19, 23, 28, 43"
+>>SET resultado:10-05-2015:megasena "4, 16, 19, 23, 28, 43"
+
+--INFORMAR MAIS DE UMA CHAVE EM SEQUENCIA
+>>MSET resultado:03-05-2015:megasena "1, 3, 17, 19, 24, 26" resultado:22-04-2015:megasena "15, 18, 20, 32, 37, 41" resultado:15-04-2015:megasena "10, 15, 18, 22, 35, 43"
+--------------------------------------------------
+--EXEMPLO DE BUSCAS
+>>--RETORNA TODOS OS RESULTADOS DO MES 5 DE 2015 DA MEGASENA
+KEYS "resultado:*-05-2015:megasena"
+
+--SUBSTITUIR APENAS UM CARACTER USAMOS "?" 
+>>KEYS "resultado:1?-05-2015:megasena"
+
+--BUSCA O 15 OU 17
+>>KEYS resultado:1[57]
+
+--------------------------------------------------
+USANDO HASH - Então o hash serve para armazenar mais de um valor numa chave, em um dicionário de dados.
+>>HSET resultado:24-05-2015:megasena "numeros" "13, 17, 19, 25, 28, 32"
+>>HSET resultado:24-05-2015:megasena "ganhadores" 23
+
+>>HGET resultado:24-05-2015:megasena "numeros"
+"13, 17, 19, 25, 28, 32"
+>>HGET resultado:24-05-2015:megasena "ganhadores"
+"23"
+
+>>HDEL resultado:24-05-2015:megasena "numeros"
+(integer) 1
+
+--INFORMAR MAIS DE UMA CHAVE NO HASH NO MESMO COMANDO
+>>HMSET nome_da_chave campo1 "Ola" campo2 "Mundo"
+
+--PEGAR TODAS AS CHAVES DENTRO DO HASH
+>>HGETALL "resultado:05-06-2015:megasena"
+
+--------------------------------------------------
+SOLICITAR AO REDIS EXPIRAR UMA CHAVE OU HASH
+
+--EXPIRAR UMA CHAVE EM 30 MINUTOS = 1800 SEGUNDOS
+>>EXPIRE "sessao:usuario:1675" 1800
+ 
+--SABER O TEMPO QUE FALTA PARA EXPIRAR A CHAVE
+>>TTL "sessao:usuario:1675" 
+(integer) 1680
+ 
+ --HMSET USADO PARA GUARDAR MULTIPLAS INFORMAÇÕES EM UM HASH
+>>HMSET "sessao:usuario:1675" "nome" "guilherme" "total_de_produtos" "3" "sobrenome" "silveira"
+ 
+ 
+-------------------------------------------------- 
+--INCREMENTO DE NUMERO
+>>INCR pagina:/contato:25-05-2015
+(integer) 10
+
+--DECREMENTO DE NUMERO
+>>DECR pagina:/contato:25-05-2015
+(integer) 9
+ 
+--INCREMENTAR 2 AO VALOR EXISTENTE 9
+>>INCRBY compras:25-05-2015:valor 2
+ (integer) 11
+
+--DECREMENTAR 3 AO VALOR EXISTENTE 11
+>>DECRBY compras:25-05-2015:valor 3
+(integer) 8
+
+--INCREMENTAR VALORES FLUTUANTES 
+INCRBYFLOAT compras:25-05-2015:valor 10.50 
+"18.50"
+ 
+-------------------------------------------------- 
+--INFORMAR QUE O USUARIO 15 ACESSOU O SISTEMA NO DIA 25/05/2015
+SETBIT acesso:25-05-2015 15 1
+
+--SABER SE O USUÁRIO 15 ACESSOU O SISTEMA
+GETBIT acesso:25-05-2015 15 
+(integer) 1
+
+--CONTAR O NUMERO DE USUÁRIOS QUE ACESSOU O SISTEMA NO DIA 25/06/2015
+BITCOUNT acesso:25-06-2015
+(integer) 2
+
+--CRIAR UMA CHAVE COM OS USUARIOS QUE ACESSARAM O SISTEMA DIA 25 E 26
+BITOP AND acesso:25-e-26-06-2015 acesso:25-06-2015 acesso:26-06-2015
+(integer) 1
+
+--CRIAR UMA CHAVE COM OS USUARIOS QUE ACESSARAM O SISTEMA DI 25 OU 26
+BITOP OR acesso:25-ou-26-06-2015 acesso:25-06-2015 acesso:26-06-2015
+
