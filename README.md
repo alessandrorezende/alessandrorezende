@@ -1,2 +1,2 @@
-# alessandrorezende
-redis-alura
+# Redis I: Armazenando chaves e valores
+
